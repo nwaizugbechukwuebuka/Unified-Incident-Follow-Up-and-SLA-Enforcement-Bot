@@ -1,0 +1,1133 @@
+{
+  "name": "Unified Incident Follow-Up and SLA Enforcement Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "4e6ea889-1357-4bd4-a8c1-a27381647729",
+      "name": "SLA Monitor Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "e0149062-b114-478d-b664-f8720ba8d6e5",
+      "name": "Workflow Configuration",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "0ce651a1-6d68-43ad-ad0b-aa36b3866972",
+      "name": "Fetch Active Incidents",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        448,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "id": "e1008150-0db8-485b-af3d-4ee21354b86b",
+      "name": "Calculate SLA Status",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "SLA OK"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Warning - Reminder"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Breached"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Critical Escalation"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "804e5e31-8d2c-48d0-8e6f-14a39c38b9af",
+      "name": "Route by SLA Status",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "3119b3f7-a064-4771-a9d7-e4d0eaec93d4",
+      "name": "Format Reminder Notification",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "c3321a72-8928-415a-88f9-35577605375d",
+      "name": "Format Breach Notification",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "2ebfc1e5-c533-47c0-bf79-93a1117047ca",
+      "name": "Format Critical Escalation",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "otherOptions": {}
+      },
+      "id": "f2566566-34e1-42f0-a110-acba0721a2a3",
+      "name": "Send Reminder to Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        1344,
+        0
+      ],
+      "webhookId": "2120d46c-08d9-40b5-baf4-b7119e5c81df"
+    },
+    {
+      "parameters": {
+        "otherOptions": {}
+      },
+      "id": "2f0780d6-bd96-4036-a3cc-a37c151a651f",
+      "name": "Send Breach Alert to Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        1344,
+        192
+      ],
+      "webhookId": "46d76ea1-c758-49da-b701-38f5e2f9bdae"
+    },
+    {
+      "parameters": {
+        "otherOptions": {}
+      },
+      "id": "a676096d-8e02-4902-8b35-2275e0d66bb7",
+      "name": "Send Critical Escalation to Slack",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        1344,
+        384
+      ],
+      "webhookId": "c0910108-4977-4ecc-9c63-0adfcdb1eb5f"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "2c8cf908-173a-4d2b-8420-9cd51bd13ae4",
+      "name": "Update Reminder Sent",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1568,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "ca033581-3b4e-4aef-8750-84271fe34a86",
+      "name": "Update Breach Escalation",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1568,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "7ecdae0e-6443-441a-ae9f-7919d10f929a",
+      "name": "Update Critical Escalation",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1568,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "9979890e-28d2-463e-8952-f4ac080486a9",
+      "name": "Log Reminder Audit",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1792,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "bdfc7a7a-92b9-460b-b921-49d3786e74ee",
+      "name": "Log Breach Audit",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1792,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "54643fc6-71bd-4901-9c93-3c05fa61916b",
+      "name": "Log Critical Audit",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1792,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "177b1c3f-a273-466d-9c5f-ce24cdb6b7a2",
+        "options": {}
+      },
+      "id": "f4adc7c5-5449-43de-b6e7-57c6aacdb928",
+      "name": "Manual Override Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        904
+      ],
+      "webhookId": "177b1c3f-a273-466d-9c5f-ce24cdb6b7a2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "6f266695-75ab-43cd-9450-6f3f49c08fb8",
+      "name": "Validate Override Request",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        224,
+        904
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Resolve"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Extend SLA"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Reassign"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b508bbf1-c577-4c95-9a61-ba7c3dd3ace1",
+      "name": "Route Override Action",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        776
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "2c029454-89ed-40c7-adb9-2dc2d8918c6f",
+      "name": "Resolve Incident",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        672,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "68e506b8-4869-42c2-9003-d023c65481c6",
+      "name": "Extend SLA Deadline",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        672,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "111deeac-e380-4003-ad00-1240131f4bf9",
+      "name": "Reassign Incident Owner",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        672,
+        992
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "32c9f8a9-c205-43b0-9205-f8f691e25885",
+      "name": "Log Override Audit",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1120,
+        712
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "0cf665a8-be2d-4f4b-a108-803681c32d1f",
+      "name": "Send Override Confirmation",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1344,
+        712
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "b8f812ab-c4e8-47f4-9a9f-c8af51579946",
+      "name": "Send Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        448,
+        1000
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "23848d3e-170f-46f7-b2a1-d81fc8239b95",
+      "name": "Global Error Handler",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        1224
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "d4988c36-e90f-45d7-9c4b-5f7affc8e3b7",
+      "name": "Analyze Error and Retry Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        1224
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "57edda70-a46a-4bff-8f44-b52687b6297e",
+      "name": "Check Retry Eligibility",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        1224
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "fcd1e68e-1ec7-472c-b290-72cdbcab7dc1",
+      "name": "Log to Dead Letter Queue",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        672,
+        1224
+      ]
+    },
+    {
+      "parameters": {
+        "otherOptions": {}
+      },
+      "id": "91b77ad9-0a6f-4f71-a011-90fffe8e90ac",
+      "name": "Alert Ops Team on Error",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        896,
+        1224
+      ],
+      "webhookId": "2fa89006-b807-4543-b32c-2243447c2d27"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "14b1a3cb-8c30-447b-9114-5572530f3d7d",
+      "name": "Sync from External System",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        224,
+        1448
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "id": "65f873d5-a850-4a69-889b-8f3483ec78b1",
+      "name": "Normalize External Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        1440
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        }
+      },
+      "id": "d3d9b8b2-2fa1-4e63-a73c-f4ae5838da11",
+      "name": "Upsert Incidents",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        672,
+        1448
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "id": "aa01f8ce-d4cc-4280-9a9d-af03d3e04625",
+      "name": "Data Sync Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        1448
+      ]
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "id": "d935ef53-699a-4d2b-9710-b64425b9dc21",
+      "name": "Merge Override Actions",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        896,
+        696
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "SLA Monitor Schedule": {
+      "main": [
+        [
+          {
+            "node": "Workflow Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Configuration": {
+      "main": [
+        [
+          {
+            "node": "Fetch Active Incidents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Active Incidents": {
+      "main": [
+        [
+          {
+            "node": "Calculate SLA Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate SLA Status": {
+      "main": [
+        [
+          {
+            "node": "Route by SLA Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by SLA Status": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Format Reminder Notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Breach Notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Format Critical Escalation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Reminder Notification": {
+      "main": [
+        [
+          {
+            "node": "Send Reminder to Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Breach Notification": {
+      "main": [
+        [
+          {
+            "node": "Send Breach Alert to Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Critical Escalation": {
+      "main": [
+        [
+          {
+            "node": "Send Critical Escalation to Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Reminder to Slack": {
+      "main": [
+        [
+          {
+            "node": "Update Reminder Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Breach Alert to Slack": {
+      "main": [
+        [
+          {
+            "node": "Update Breach Escalation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Critical Escalation to Slack": {
+      "main": [
+        [
+          {
+            "node": "Update Critical Escalation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Reminder Sent": {
+      "main": [
+        [
+          {
+            "node": "Log Reminder Audit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Breach Escalation": {
+      "main": [
+        [
+          {
+            "node": "Log Breach Audit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Critical Escalation": {
+      "main": [
+        [
+          {
+            "node": "Log Critical Audit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Override Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Override Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Override Request": {
+      "main": [
+        [
+          {
+            "node": "Route Override Action",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Override Action": {
+      "main": [
+        [
+          {
+            "node": "Resolve Incident",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extend SLA Deadline",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reassign Incident Owner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resolve Incident": {
+      "main": [
+        [
+          {
+            "node": "Merge Override Actions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extend SLA Deadline": {
+      "main": [
+        [
+          {
+            "node": "Merge Override Actions",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Reassign Incident Owner": {
+      "main": [
+        [
+          {
+            "node": "Merge Override Actions",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge Override Actions": {
+      "main": [
+        [
+          {
+            "node": "Log Override Audit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Override Audit": {
+      "main": [
+        [
+          {
+            "node": "Send Override Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Global Error Handler": {
+      "main": [
+        [
+          {
+            "node": "Analyze Error and Retry Logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Error and Retry Logic": {
+      "main": [
+        [
+          {
+            "node": "Check Retry Eligibility",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Retry Eligibility": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Log to Dead Letter Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log to Dead Letter Queue": {
+      "main": [
+        [
+          {
+            "node": "Alert Ops Team on Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Sync Schedule": {
+      "main": [
+        [
+          {
+            "node": "Sync from External System",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sync from External System": {
+      "main": [
+        [
+          {
+            "node": "Normalize External Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize External Data": {
+      "main": [
+        [
+          {
+            "node": "Upsert Incidents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "fe863943-da93-4736-9584-1909b6cfbe68",
+  "meta": {
+    "instanceId": "6c8bfe9e9f7ecc05e8fe5f09620e16e03759410071a7c053ab90590a5cc5c479"
+  },
+  "id": "KRAtHD6GPqrJIY5S",
+  "tags": []
+}
