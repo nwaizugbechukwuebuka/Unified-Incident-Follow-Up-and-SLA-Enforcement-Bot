@@ -9,6 +9,11 @@
 [![CI/CD](https://img.shields.io/badge/CI/CD-Automated-blue?style=for-the-badge&logo=github-actions)]()
 [![Security](https://img.shields.io/badge/Security-Enterprise_Grade-red?style=for-the-badge&logo=security)]()
 
+[![Python](https://img.shields.io/badge/Python-3.11+-3776ab.svg?style=flat&logo=python&logoColor=white)]()
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-009688.svg?style=flat&logo=fastapi&logoColor=white)]()
+[![Docker](https://img.shields.io/badge/Docker-Production_Ready-2496ed.svg?style=flat&logo=docker&logoColor=white)]()
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-Enterprise_Scale-326ce5.svg?style=flat&logo=kubernetes&logoColor=white)]()
+
 ---
 
 ## 🎯 Project Overview
