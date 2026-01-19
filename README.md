@@ -257,7 +257,7 @@ MIT License © 2025 Chukwuebuka Tobiloba Nwaizugbe
 
 <div align="center">
 
-[![GitHub](https://img.shields.io/badge/GitHub-nwaizugbechukwuebuka-181717.svg?style=flat&logo=github)](https://github.com/nwaizugbechukwuebuka/Incident-intelligence-engine.git)
+[![GitHub](https://img.shields.io/badge/GitHub-nwaizugbechukwuebuka-181717.svg?style=flat&logo=github)](https://github.com/nwaizugbechukwuebuka/Unified-Incident-Follow-Up-and-SLA-Enforcement-Bot)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077b5.svg?style=flat&logo=linkedin)](https://www.linkedin.com/in/chukwuebuka-tobiloba-nwaizugbe/)
 [![X (Twitter)](https://img.shields.io/badge/Follow%20us%20on-X-000000?logo=x&logoColor=white&style=for-the-badge)](https://x.com/DeepWorkSociety)
 [![Discord](https://img.shields.io/badge/Join%20us%20on-Discord-5865F2?logo=discord&logoColor=white&style=for-the-badge)](https://discord.gg/TY9uwSgK)
